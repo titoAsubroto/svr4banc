@@ -876,7 +876,7 @@ app.get("/banc/getRegisteredEvents", (req, Res) => {
 
   function aValidateCB(output) {
     if (output.err === null) {
-      if (output.token_valid) {
+      if (output.valid) {
         personid = output.personid;
         primeId = output.primeid;
         console.log(primeId, personid);
@@ -963,7 +963,7 @@ app.get("/banc/getTransactions", (req, Res) => {
 
   function aValidateCB(output) {
     if (output.err === null) {
-      if (output.token_valid) {
+      if (output.valid) {
         personid = output.personid;
         primeId = output.primeid;
         console.log(primeId, personid);
@@ -1021,8 +1021,12 @@ app.get("/banc/getMembershipPaid", (req, Res) => {
     email = req.header("email");
     uid = req.header("userid");
     formatType = req.header("formatType");
-    yearFrom = req.header("yearFrom");
-    yearTo = req.header("yearTo");
+    if (req.header.hasOwnProperty("yearFrom")) {
+      yearFrom = req.header("yearFrom");
+    }
+    if (req.header.hasOwnProperty("yearTo")) {
+      yearTo = req.header("yearTo");
+    }
   } else {
     token = req.query.stoken;
     email = req.query.email;
@@ -1049,7 +1053,7 @@ app.get("/banc/getMembershipPaid", (req, Res) => {
 
   function aValidateCB(output) {
     if (output.err === null) {
-      if (output.token_valid) {
+      if (output.valid) {
         personid = output.personid;
         primeId = output.primeid;
         console.log(primeId, personid);
