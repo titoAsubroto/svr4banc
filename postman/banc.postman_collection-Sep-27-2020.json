@@ -1,0 +1,537 @@
+{
+	"info": {
+		"_postman_id": "5747d8f2-8f83-4ddf-ad15-5ea98348ebd1",
+		"name": "banc",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "postman",
+			"item": [
+				{
+					"name": "http://localhost:8000/banc/getTransactions",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "userid",
+								"value": "subroto",
+								"type": "text"
+							},
+							{
+								"key": "email",
+								"value": "subroto@computer.org",
+								"type": "text"
+							},
+							{
+								"key": "stoken",
+								"value": "5beb44a93a2a857faad470cef8c905cf",
+								"type": "text"
+							},
+							{
+								"key": "formatType",
+								"value": "groupBySummary",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"firstname\":\"Nandita\",\n\"middlename\":\"\",\n\"lastname\":\"Bhattacharya\",\n\"email\":\"nanditajsr@gmail.com\",\n\"strict\":false,\n\"year\":2019}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/banc/getTransactions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"banc",
+								"getTransactions"
+							]
+						},
+						"description": "banc getTransaction"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8000/banc/getmemberinfo",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "userid",
+								"value": "subroto",
+								"type": "text"
+							},
+							{
+								"key": "email",
+								"value": "subroto@computer.org",
+								"type": "text"
+							},
+							{
+								"key": "stoken",
+								"value": "5beb44a93a2a857faad470cef8c905cf",
+								"type": "text"
+							},
+							{
+								"key": "formatType",
+								"value": "profile",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"firstname\":\"Nandita\",\n\"middlename\":\"\",\n\"lastname\":\"Bhattacharya\",\n\"email\":\"nanditajsr@gmail.com\",\n\"strict\":false,\n\"year\":2019}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/banc/getmemberinfo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"banc",
+								"getmemberinfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8000/banc/getEventInfo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/banc/getEventInfo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"banc",
+								"getEventInfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8000/banc/getTransactionType",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/banc/getTransactionType",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"banc",
+								"getTransactionType"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8000/banc/getAssociationTypeInfo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/banc/getAssociationTypeInfo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"banc",
+								"getAssociationTypeInfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8000/banc/getRegisteredEvents",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "userid",
+								"value": "subroto",
+								"type": "text"
+							},
+							{
+								"key": "email",
+								"value": "subroto@computer.org",
+								"type": "text"
+							},
+							{
+								"key": "stoken",
+								"value": "5beb44a93a2a857faad470cef8c905cf",
+								"type": "text"
+							},
+							{
+								"key": "formatType",
+								"value": "default",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"firstname\":\"Nandita\",\n\"middlename\":\"\",\n\"lastname\":\"Bhattacharya\",\n\"email\":\"nanditajsr@gmail.com\",\n\"strict\":false,\n\"year\":2019}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/banc/getRegisteredEvents",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"banc",
+								"getRegisteredEvents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8000/banc/getMembershipPaid",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "userid",
+								"value": "subroto",
+								"type": "text"
+							},
+							{
+								"key": "email",
+								"value": "subroto@computer.org",
+								"type": "text"
+							},
+							{
+								"key": "stoken",
+								"value": "5beb44a93a2a857faad470cef8c905cf",
+								"type": "text"
+							},
+							{
+								"key": "formatType",
+								"value": "default",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"firstname\":\"Nandita\",\n\"middlename\":\"\",\n\"lastname\":\"Bhattacharya\",\n\"email\":\"nanditajsr@gmail.com\",\n\"strict\":false,\n\"year\":2019}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/banc/getMembershipPaid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"banc",
+								"getMembershipPaid"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8000/banc/ismember",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "userid",
+								"value": "subroto",
+								"type": "text"
+							},
+							{
+								"key": "email",
+								"value": "subroto@computer.org",
+								"type": "text"
+							},
+							{
+								"key": "stoken",
+								"value": "5beb44a93a2a857faad470cef8c905cf",
+								"type": "text"
+							},
+							{
+								"key": "fname",
+								"value": "Nandita",
+								"type": "text"
+							},
+							{
+								"key": "lname",
+								"value": "Bhattacharya",
+								"type": "text"
+							},
+							{
+								"key": "personemail",
+								"value": "nanditajsr@gmail.com",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/banc/ismember",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"banc",
+								"ismember"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8000/banc/setpersonInfo-Insert-error",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "userid",
+								"type": "text",
+								"value": "subroto"
+							},
+							{
+								"key": "email",
+								"type": "text",
+								"value": "subroto@computer.org"
+							},
+							{
+								"key": "stoken",
+								"type": "text",
+								"value": "5beb44a93a2a857faad470cef8c905cf"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"update\": true,\n    \"prime\": {\n        \"entity_id\": \"0\",\n        \"firstname\": \"Subroto\",\n        \"lastname\": \"Bhattacharya\",\n        \"middlename\": \"\",\n        \"email\": \"subroto@computer.org\",\n        \"prime\": true,\n        \"dependent\": false,\n        \"affiliationid\": \"\",\n        \"telephone\": \"9194607990\",\n        \"mobile\": \"9193451714\",\n        \"isminor\": false\n    },\n    \"address\":{\n        \"entity_id\": \"0\",\n        \"street\": \"5015 Sears Farm Road\",\n        \"address2\": \"\",\n        \"city\": \"Cary\",\n        \"state\": \"North Carolina\",\n        \"country\": \"\",\n        \"zip\": 27519\n    },\n    \"spouse\": {\n        \"entity_id\": \"0\",\n        \"firstname\": \"Nandita\",\n        \"lastname\": \"Bhattacharya\",\n        \"middlename\": \"\",\n        \"email\": \"subroto@computer.org\",\n        \"prime\": false,\n        \"dependent\": false,\n        \"affiliationid\": \"\",\n        \"telephone\": \"9194607990\",\n        \"mobile\": \"\",\n        \"isminor\": false\n    },\n    \"deps\": [],\n    \"primcomm\":null\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/banc/setpersonInfo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"banc",
+								"setpersonInfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8000/banc/pay-test1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "userid",
+								"type": "text",
+								"value": "subroto"
+							},
+							{
+								"key": "email",
+								"type": "text",
+								"value": "subroto@computer.org"
+							},
+							{
+								"key": "stoken",
+								"type": "text",
+								"value": "5beb44a93a2a857faad470cef8c905cf"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"form_date\": \"2020-01-10\",\n    \"form_memo\": \"Pay Test Data\",\n    \"form_ref_id\": \"abec566896a46768bc\",\n    \"pay_data\": {\n        \"person\": {\n            \"firstname\": \"Subroto\",\n            \"lastname\": \"Bhattacharya\",\n            \"middlename\": \"\",\n            \"email\": \"subroto@computer.org\",\n            \"telephone\": \"9194607990\",\n            \"mobile\": \"9193451714\"\n        },\n        \"membership\": {\n            \"type\": \"Family-member\",\n            \"year\": 2020\n        },\n        \"event\": {\n            \"name\": \"Swaraswati Puja\",\n            \"year\": 2020,\n            \"event_info\": \"Family-member\",\n            \"adult_count\": 2,\n            \"child_count\": 1,\n            \"guest_count\": 0\n        },\n        \"transactions\": [\n            {\n                \"category\": \"BANC\",\n                \"sub_category\": \"membership\",\n                \"line_item\": \"Family-member\",\n                \"amount\": 50,\n                \"memo\": \"Membership\",\n                \"quantity\": 1\n            },\n            {\n                \"category\": \"event\",\n                \"sub_category\": \"subscription\",\n                \"line_item\": \"Family-member\",\n                \"amount\": 35,\n                \"memo\": \"Swaraswati Puja\",\n                \"quantity\": 1\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/banc/pay",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"banc",
+								"pay"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8000/banc/processPayData-test1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "userid",
+								"type": "text",
+								"value": "subroto"
+							},
+							{
+								"key": "email",
+								"type": "text",
+								"value": "subroto@computer.org"
+							},
+							{
+								"key": "stoken",
+								"type": "text",
+								"value": "5beb44a93a2a857faad470cef8c905cf"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"form_date\": \"2020-01-10\",\n    \"form_memo\": \"Pay Test Data\",\n    \"form_ref_id\": \"abec566896a46768bc\",\n    \"pay_data\": {\n        \"person\": {\n            \"firstname\": \"Subroto\",\n            \"lastname\": \"Bhattacharya\",\n            \"middlename\": \"\",\n            \"email\": \"subroto@computer.org\",\n            \"telephone\": \"9194607990\",\n            \"mobile\": \"9193451714\"\n        },\n        \"membership\": {\n            \"type\": \"Family-member\",\n            \"year\": 2020\n        },\n        \"event\": {\n            \"name\": \"Swaraswati Puja\",\n            \"year\": 2020,\n            \"event_info\": \"Family-member\",\n            \"adult_count\": 2,\n            \"child_count\": 1,\n            \"guest_count\": 0\n        },\n        \"transactions\": [\n            {\n                \"category\": \"BANC\",\n                \"sub_category\": \"membership\",\n                \"line_item\": \"Family-member\",\n                \"amount\": 50,\n                \"memo\": \"Membership\",\n                \"quantity\": 1\n            },\n            {\n                \"category\": \"event\",\n                \"sub_category\": \"subscription\",\n                \"line_item\": \"Family-member\",\n                \"amount\": 35,\n                \"memo\": \"Swaraswati Puja\",\n                \"quantity\": 1\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/banc/pay",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"banc",
+								"pay"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8000/banc/pay-test2",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "userid",
+								"type": "text",
+								"value": "subroto"
+							},
+							{
+								"key": "email",
+								"type": "text",
+								"value": "subroto@computer.org"
+							},
+							{
+								"key": "stoken",
+								"type": "text",
+								"value": "5beb44a93a2a857faad470cef8c905cf"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"form_date\": \"2020-09-10\",\n    \"form_memo\": \"Pay Test Data\",\n    \"form_ref_id\": \"abec566896a465643\",\n    \"pay_data\": {\n        \"person\": {\n            \"firstname\": \"Subroto\",\n            \"lastname\": \"Bhattacharya\",\n            \"middlename\": \"\",\n            \"email\": \"subroto@computer.org\",\n            \"telephone\": \"9194607990\",\n            \"mobile\": \"9193451714\"\n        },\n        \"membership\": null,\n        \"event\": {\n            \"name\": \"Durga Puja\",\n            \"year\": 2020,\n            \"event_info\": \"Family-member\",\n            \"adult_count\": 2,\n            \"child_count\": 1,\n            \"guest_count\": 0\n        },\n        \"transactions\": [\n            {\n                \"category\": \"event\",\n                \"sub_category\": \"subscription\",\n                \"line_item\": \"Family-member\",\n                \"amount\": 160,\n                \"memo\": \"Durga Puja\",\n                \"quantity\": 1\n            },\n                        {\n                \"category\": \"event\",\n                \"sub_category\": \"subscription\",\n                \"line_item\": \"Member-guest-3-day\",\n                \"amount\": 80,\n                \"memo\": \"Durga Puja\",\n                \"quantity\": 1\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/banc/pay",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"banc",
+								"pay"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

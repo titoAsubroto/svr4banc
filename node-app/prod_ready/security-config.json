@@ -1,0 +1,9 @@
+{
+  "https": false,
+
+  "keyFileName": "",
+  "keyPassphrase": "",
+  "certificateFileName": "",
+  "certificateAuthorityFileName": "",
+  "gatewayCN": ""
+}

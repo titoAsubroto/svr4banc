@@ -1,0 +1,52 @@
+type_id,category,subcategory,line_item,mapping_string
+1,BANC,membership,Family-member,Family-member|Family/Couple|Already Paid
+2,BANC,membership,Single-member,Single-member|Single-
+3,BANC,membership,Non-member,Non-member|Not A Member
+4,BANC,special,Default,
+200,Swaraswati Puja,subscription,Non-member,Non-member
+201,Swaraswati Puja,subscription,Family-member,SP Dues|Family-member
+202,Swaraswati Puja,subscription,Single-member,SP Dues|Single-member
+203,Swaraswati Puja,subscription,Summary-line,Member
+204,Swaraswati Puja,special,Default,
+205,Swaraswati Puja,account,Receipt,
+206,Swaraswati Puja,account,Expenses,
+250,Durga Puja,subscription,Family-member,Member Family/Couple
+251,Durga Puja,subscription,Single-member,Member Single
+252,Durga Puja,subscription,Non-member-adult-3-day,3 Days/Non-member Adult
+253,Durga Puja,subscription,Non-member-child-3-day,Non-member Child/1 or 3 day
+254,Durga Puja,subscription,Non-member-adult-1-day,1 Day/Non-member Adult
+255,Durga Puja,subscription,Non-member-child-1-day,Non-member Child/1 or 3 day
+256,Durga Puja,subscription,Non-member-adult-ashtami,Ashtami Special/Non-member Adult
+257,Durga Puja,subscription,Non-member-child-ashtami,Ashtami Special/Non-member Child
+258,Durga Puja,subscription,Senior-3-day,3 days/Senior
+259,Durga Puja,subscription,Senior-1-day,1 days/Senior
+260,Durga Puja,subscription,Senior-ashtami,Ashtami Special/Senior
+261,Durga Puja,subscription,Student-3-day,3 days/Student
+262,Durga Puja,subscription,Student-1-day,1 day/Student
+263,Durga Puja,subscription,Student-ashtami,Ashtami Special/Student
+264,Durga Puja,subscription,Member-guest-3-day,3 days/Member's Guest|3 days/Member Guest
+265,Durga Puja,subscription,Member-guest-1-day,1 days/Member's Guest|1 days/Member Guest
+266,Durga Puja,subscription,Member-guest-ashtami,Ashtami Special/Member's Guest|Ashtami Special/Member Guest
+267,Durga Puja,subscription,Summary-line,Member
+268,Durga Puja,advertisement,Vendor,Business Greetings
+269,Durga Puja,advertisement,Diganta/Affiliates,Personal Greetings
+270,Durga Puja,donation,Food,Food|Donate|Donation
+271,Durga Puja,donation,Puja,Puja|Donate|Donation
+272,Durga Puja,donation,Misc,Banc|Donate|Donation
+273,Durga Puja,special,Default,
+274,Durga Puja,expenses,Food,
+275,Durga Puja,expenses,Puja,
+276,Durga Puja,expenses,Transportation,
+277,Durga Puja,expenses,Decoration,
+278,Durga Puja,expenses,Venue-Rental,
+279,Durga Puja,expenses,Misc,
+280,Durga Puja,expenses,Misc,
+281,Durga Puja,expenses,Misc,
+282,Durga Puja,expenses,Misc,
+500,Paypal,special,Payment-refund,Payment Refund
+501,Paypal,special,General-withdrawal,General Withdrawal
+502,Paypal,special,Summary-line/Receipt,Donation|Website|Paypal
+503,Paypal,special,Bill User Payment,PreApproved Payment Bill
+504,Paypal,special,Subscription Payment,Subscription Payment
+505,Paypal,special,Summary-to-Sub-line,Shopping
+506,Paypa,special,Default,

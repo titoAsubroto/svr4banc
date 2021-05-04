@@ -1,0 +1,49 @@
+type_id,category,subcategory,line_item,mapping_string
+1,BANC,membership,Family-member,Family-member|Family/Couple|Already Paid
+2,BANC,membership,Single-member,Single-member|Single-
+3,BANC,membership,Non-member,Non-member|Not A Member
+4,BANC,special,Default,
+200,event,subscription,Non-member,Non-member
+201,event,subscription,Family-member,SP Dues|Family-member|Member Family/Couple
+202,event,subscription,Single-member,SP Dues|Single-member|Member Single
+203,event,subscription,Non-member-adult-3-day,3 Days/Non-member Adult
+204,event,subscription,Non-member-child-3-day,Non-member Child/1 or 3 day
+205,event,subscription,Non-member-adult-1-day,1 Day/Non-member Adult
+206,event,subscription,Non-member-child-1-day,Non-member Child/1 or 3 day
+207,event,subscription,Non-member-adult-ashtami,Ashtami Special/Non-member Adult
+208,event,subscription,Non-member-child-ashtami,Ashtami Special/Non-member Child
+209,event,subscription,Senior-3-day,3 days/Senior
+210,event,subscription,Senior-1-day,1 days/Senior
+211,event,subscription,Senior-ashtami,Ashtami Special/Senior
+212,event,subscription,Student-3-day,3 days/Student
+213,event,subscription,Student-1-day,1 day/Student
+214,event,subscription,Student-ashtami,Ashtami Special/Student
+215,event,subscription,Member-guest-3-day,3 days/Member's Guest|3 days/Member Guest
+216,event,subscription,Member-guest-1-day,1 days/Member's Guest|1 days/Member Guest
+217,event,subscription,Member-guest-ashtami,Ashtami Special/Member's Guest|Ashtami Special/Member Guest
+218,event,subscription,Summary-line,Member
+219,event,advertisement,Vendor,Business Greetings
+220,event,advertisement,Diganta/Affiliates,Personal Greetings
+221,event,receipt,Stall-rental,stall|booth|rent from vendor
+222,event,receipt,Donation-for-food,Food donation|donate
+223,event,receipt,Donation-for-Puja,Puja donation|donate
+224,event,receipt,Misc-donation,Donate to BANC
+225,event,receipt,Misc,
+226,event,expense,Food,Food|Catering|Snack
+227,event,expense,Puja,Puja 
+228,event,expense,Transportation,U-haul|Uhaul|Uber|Van rental
+229,event,expense,Decoration,Flowers
+230,event,expense,Venue-Rental,School rental|hall rental|park rental
+231,event,expense,Cultural-Functions,Stage support|
+232,event,expense,External-Artists,Singer|Foreign artist|
+233,event,expense,Light-Sound-Video Equipment,Sound rental|Video rental|Light
+234,event,expense,Stage-setup,Constumes|Stage props
+235,event,expense,Misc,
+506,event,special,Default,
+500,Paypal,payment,Payment-refund,Payment Refund
+501,Paypal,receipt,General-withdrawal,General Withdrawal
+502,Paypal,receipt,Summary-line/Receipt,Donation|Website|Paypal
+503,Paypal,expense,Bill User Payment,PreApproved Payment Bill
+504,Paypal,payment,Subscription Payment,Subscription Payment
+505,Paypal,receipt,Summary-to-Sub-line,Shopping
+506,Paypal,special,Default,

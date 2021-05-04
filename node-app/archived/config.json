@@ -1,0 +1,56 @@
+{
+  "defaultValues": {
+    "timeZoneId": "Europe/London",
+    "entityTypeId": "ET5",
+    "linkTypeId": "LAS1"
+  },
+
+  "schemaUrl": "/schema",
+  "chartingSchemesUrl": "/chartingSchemes",
+
+  "services": [
+    {
+      "id": "exampleSearch",
+      "name": "Example Search",
+      "description":
+        "An example that queries a dataset of people and their friendships by searching for text in their names. You can also use '*' to retrieve all data.",
+
+      "acquireUrl": "/exampleSearch/acquire",
+      "validateUrl": "/exampleSearch/validate",
+
+      "clientConfigType": "FORM",
+      "clientConfigId": "exampleForm",
+      "resultItemTypeIds": ["ET5", "LAS1"]
+    },
+    {
+      "id": "exampleSchemaExtension",
+      "name": "Example Schema Extension",
+      "description":
+        "An example that returns some fixed data of an entity type that the connector defines.",
+
+      "acquireUrl": "/exampleSchemaExtension/acquire",
+
+      "clientConfigType": "NONE",
+      "resultItemTypeIds": ["TWEET"]
+    }
+  ],
+  "clientConfigs": [
+    {
+      "id": "exampleForm",
+      "config": {
+        "sections": [
+          {
+            "conditions": [
+              {
+                "id": "term",
+                "label": "Search text",
+                "mandatory": true,
+                "logicalType": "SINGLE_LINE_STRING"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

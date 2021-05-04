@@ -1,0 +1,67 @@
+{
+    "email": {
+        "pattern":"^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
+        "len": -1,
+        "msg": "Email address pattern failed!"
+    },
+    "uid": {
+        "pattern": "^(?=.{6,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$",
+        "len": 20,
+        "msg": "uid pattern failed or User id max. length failed: "
+    },
+    "md5": {
+        "pattern": "^[a-f0-9]{32}$",
+        "len": -1,
+        "msg": "md5 pattern failed or User id max. length failed: "
+    },
+    "bool": {
+        "pattern": "^(?:(1|y(?:es)?|t(?:rue)?|on)|(0|n(?:o)?|f(?:alse)?|off))$", 
+        "len": -1,
+        "msg": " Bool pattern failed or User id max. length failed: "
+    },
+    "decimal": {
+        "pattern": "^[0-9](\\.[0-9]+)?$",
+        "len": -1,
+        "msg": "decimal pattern failed or User id max. length failed: "
+    },
+    "number": {
+        "pattern": "^\\-?[0-9]+$",
+        "len": -1,
+        "msg": " Number pattern failed or User id max. length failed: "
+    },
+    "name": {
+        "pattern": "[A-Z][a-zA-Z\\-\\']+$",
+        "len": -1,
+        "msg": " Name pattern failed or User id max. length failed: "
+    },
+    "alpha": {
+        "pattern": "/^[a-zA-Z]+$/gm",
+        "len": -1,
+        "msg": " alpha pattern failed or User id max. length failed: "
+    },
+    "alphanumeric": {
+        "pattern": "^[a-zA-Z0-9]+$",
+        "len": 35,
+        "msg": " alphanumeric pattern failed or User id max. length failed: "
+    },
+    "alphanumeric+": {
+        "pattern": "^[a-zA-Z0-9\\-\\s]+$",
+        "len": 80,
+        "msg": " alphanumeric, space & dash pattern failed or User id max. length failed: "
+    },
+    "zipcode": {
+        "pattern": "^\\d{5}(\\-\\d{4})?$",
+        "len": 15,
+        "msg": " zipcode pattern failed or User id max. length failed: "
+    },
+    "city": {
+        "pattern": "^[a-zA-Z]+(?:[\\s-][a-zA-Z]+)*$",
+        "len": 45,
+        "msg": " City pattern failed or User id max. length failed: "
+    },
+    "dbkey": {
+        "pattern": "^0*[1-9][0-9]*$",
+        "len": 10,
+        "msg": " DB key pattern failed or it cannot be 0. length failed: "
+    }
+}

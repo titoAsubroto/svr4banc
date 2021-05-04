@@ -1,0 +1,22 @@
+{
+  "authGroup": { "user": 1, "ec_member": 2, "ec_admin": 3 },
+  "apiClientGroup": {"limited": "L", "full":"F"},
+  "groupBlocked": [0],
+  "api2AuthGroupMap": {
+    "/banc/getTransactions": [1,2,3],
+    "/banc/getPrime": [2,3,"L","F"],
+    "/banc/getEventInfo":[0,1,2,3],
+    "/banc/getTransactionType": [0,1,2,3],
+    "/banc/getPersonAndPrime":[2,3,"L","F"],
+    "/banc/setpersoninfo": [0,1,2,3],
+    "/banc/getmemberinfo": [1,2,3,"F"],
+    "/banc/getMembershipPaid": [1,2,3],
+    "/banc/ismember": [2,3,"L","F"],
+    "/banc/loadPayForm": [0,1,2,3,"L","F"],
+    "/banc/getRegisteredEvents": [1,2,3],
+    "/banc/setpersoninfo?update=own": [1,2,3],
+    "/banc/setpersoninfo?update=other": [2,3,"L","F"],
+    "/banc/processPayData":["L","F"],
+    "/banc/formData":["L","F"]
+  }
+}

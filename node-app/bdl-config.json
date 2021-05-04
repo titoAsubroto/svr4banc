@@ -1,0 +1,54 @@
+{
+  "database": "d57a25v6c1g79i",
+  "db_schemaDev": "banc",
+  "db_schemaProd": "bancpd",
+  "newDataDir": "../newDataFolder",
+  "archiveDataDir": "../archiveDataDir",
+  "event": [
+    "swaraswati puja",
+    "holi",
+    "rabindra nazrul jayanti",
+    "picnic",
+    "indian independence celebration",
+    "durga puja"
+  ],
+  "host": "localhost",
+  "logFile": "../logs/banc_data_loads.log",
+  "mysql_uid": "subroto",
+  "mysql_pwd": "titoUB1804!",
+  "Pg_pwd": "239859115f19500d380b57ff2839ab3d2ebd16954defa4b880fa5369271961d0",
+  "Pg_uid": "fpxlfkukiikfjy",
+  "http_port": 8000,
+  "https_port": 9000,
+  "db_port": 5432,
+  "db_host": "ec2-54-197-48-79.compute-1.amazonaws.com",
+  "entityTables": {
+    "address": "banc.address",
+    "event": "banc.event",
+    "communication": "banc.familyCommunication",
+    "banc_community": "banc.banc_community",
+    "transaction": "banc.transaction",
+    "person": "banc.person",
+    "organizations": "banc.organizations",
+    "creds": "banc.creds"
+  },
+  "linkTables": {
+    "association": "banc.association_link",
+    "transaction": "banc.transaction_link",
+    "affiliation": "banc.community_link"
+  },
+  "api2AuthGroupMap": {
+    "/banc/getTransactions": [1,2,3],
+    "/banc/getPrime": [2,3],
+    "/banc/getEventInfo":[0,1,2,3],
+    "/banc/getTransactionType": [0,1,2,3],
+    "/banc/getPersonAndPrime":[2,3],
+    "/banc/setpersoninfo": [0,1,2,3],
+    "/banc/getmemberinfo": [1,2,3],
+    "/banc/getMembershipPaid": [1,2,3],
+    "/banc/ismember": [2,3],
+    "/banc/getRegisteredEvents": [1,2,3],
+    "/banc/setpersoninfo?update=own": [1,2,3],
+    "/banc/setpersoninfo?update=other": [2,3] 
+  }
+}
