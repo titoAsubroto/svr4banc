@@ -6,9 +6,11 @@ const fs = require("fs"),
   https = require("https");
 const express = require("express");
 const bodyParser = require("body-parser");
+const crypto = require("crypto");
 
 const banc = require("./banc_class_pg.js");
 const WPForms = require("./wp_forms.js");
+const mailer = require("./banc_nodemailer.js");
 const outputConvertor = require("./output_convertor_FF.js");
 const { Pool } = require("pg");
 const app = express();
@@ -20,6 +22,7 @@ const useHeader = true;
 const dHelper = new banc.SetupDataHelper(verbose);
 const validator = new banc.DataValidator(verbose);
 const formsHandler = new WPForms.WPFormsHandler(verbose);
+const mailclient = new mailer.SetupNodeMailer(verbose);
 const respConvertor = new outputConvertor.OutputConvertor(verbose);
 const dbSchema = dHelper.getActiveSchema();
 //
@@ -732,160 +735,6 @@ app.get("/banc/getTransactionType", (req, Res) => {
   };
   output.transaction_type = dHelper.getTransactionType();
   sendJsonResponse(Res, output);
-});
-//
-app.get("/banc/getmemberula", (req, Res) => {
-  //
-  var outRes = {
-    msg: null,
-    err: null,
-    err_msg: null
-  };
-  var setULA = 0;  //get
-  var resultSeq = -1;
-  //
-  console.log("====== Request obj ====");
-  var calledServiceURL = req.url;
-  console.log(calledServiceURL);
-  var formatType, accessInfo;
-  if (useHeader) {
-    accessInfo = dHelper.getAccessInfo(req);
-    console.log(accessInfo);
-  }
-  
-  if (formatType == null) {
-    formatType = "default";
-  }
-  //  Validate the caller
-  dHelper.validateAccess(accessInfo, aValidateCB);
-  //
-  function aValidateCB(output) {
-    if (output.err === null) {
-      if (output.valid) {
-        let personid = output.personid;
-        let primeId = output.primeid;
-        if (output.access_option == "user") {
-          console.log(primeId, personid);
-          if (!isAuthorized(Res, calledServiceURL, output.authgroup)) {
-            return;
-          }
-          dHelper.memberULA(personid, setULA, aUlaCB,
-            null,
-            null,
-            null,
-            null
-          );
-        } else if (output.access_option == "client") {
-          if (!isAuthorized(Res, calledServiceURL, output.authgroup)) {
-            return;
-          }
-          dHelper.memberULA(personid, setULA, aUlaCB,
-            null,
-            null,
-            null,
-            null
-          );
-        }
-      } else {
-        resultSeq = -1;
-        outRes.msg = "Session token / client token could not be validated!";
-        sendJsonResponse(Res, outRes);
-      }
-    } else {
-      resultSeq = -1;
-      outRes.msg = output.err;
-      outRes["statusCode"] = 500;
-      sendJsonResponse(Res, outRes);
-    }
-  }
-  //
-  function aUlaCB(output) {
-    if (output.err) {
-      output["statusCode"] = 500;
-    }
-    sendJsonResponse(Res, output, calledServiceURL, formatType);
-    return;
-  }
-});
-//
-//
-app.post("/banc/setmemberula", (req, Res) => {
-  //
-  var outRes = {
-    msg: null,
-    err: null,
-    err_msg: null
-  };
-  var setULA = 1;  //get
-  var resultSeq = -1;
-  //
-  console.log("====== Request obj ====");
-  var calledServiceURL = req.url;
-  console.log(calledServiceURL);
-  var formatType, accessInfo;
-  var accessInfo;
-  if (useHeader) {
-    accessInfo = dHelper.getAccessInfo(req);
-    console.log(accessInfo);
-  }
-  const banc_comm = req.body.banc_comm;
-  const abide_by_banc_bylaws = req.body.abide_by_banc_bylaws;
-  const member_comm = req.body.member_comm;
-  const abide_by_premise_rules = req.body.abide_by_premise_rules;
-//
-  if (formatType == null) {
-    formatType = "default";
-  }
-  //  Validate the caller
-  dHelper.validateAccess(accessInfo, aValidateCB);
-  //
-  function aValidateCB(output) {
-    if (output.err === null) {
-      if (output.valid) {
-        let personid = output.personid;
-        let primeId = output.primeid;
-        if (output.access_option == "user") {
-          console.log(primeId, personid);
-          if (!isAuthorized(Res, calledServiceURL, output.authgroup)) {
-            return;
-          }
-          dHelper.memberULA(personid, setULA, aUlaCB,
-            abide_by_banc_bylaws,
-            banc_comm,
-            member_comm,
-            abide_by_premise_rules
-          );
-        } else if (output.access_option == "client") {
-          if (!isAuthorized(Res, calledServiceURL, output.authgroup)) {
-            return;
-          }
-          dHelper.memberULA(personid, setULA, aUlaCB,
-            abide_by_banc_bylaws,
-            banc_comm,
-            member_comm,
-            abide_by_premise_rules
-          );
-        }
-      } else {
-        resultSeq = -1;
-        outRes.msg = "Session token / client token could not be validated!";
-        sendJsonResponse(Res, outRes);
-      }
-    } else {
-      resultSeq = -1;
-      outRes.msg = output.err;
-      outRes["statusCode"] = 500;
-      sendJsonResponse(Res, outRes);
-    }
-  }
-  //
-  function aUlaCB(output) {
-    if (output.err) {
-      output["statusCode"] = 500;
-    }
-    sendJsonResponse(Res, output, calledServiceURL, formatType);
-    return;
-  }
 });
 //
 /**
@@ -1692,13 +1541,35 @@ app.post("/banc/register", (req, Res) => {
   console.log(calledServiceURL);
   //
   // read input data
-  var fname = req.body.firstname;
-  var mname = req.body.middlename;
-  var lname = req.body.lastname;
-  var email = req.body.email;
-  var uid = req.body.userid;
-  var pwd = req.body.pwd;
-  var cell = req.body.cell;
+  var fname = null;
+  if (req.body.hasOwnProperty("firstname")) {
+    fname = req.body.firstname;
+  }
+  var mname = null;
+  var lname = null;
+  if (req.body.hasOwnProperty("lastname")) {
+    lname = req.body.lastname;
+  }
+  if (req.body.hasOwnProperty("middlename")) {
+    var mname = req.body.middlename;
+  }
+  var email = null;
+  if (req.body.hasOwnProperty("email")) {
+    var email = req.body.email;
+  }
+  var uid = null;
+  var pwd = null;
+  var cell = null;
+  if (req.body.hasOwnProperty("userid")) {
+    uid = req.body.userid;
+  }
+  if (req.body.hasOwnProperty("pwd")) {
+    pwd = req.body.pwd;
+  }
+  if (req.body.hasOwnProperty("cell")) {
+    cell = req.body.cell;
+  }
+
   var outRes;
   if (!validator.registrationData(fname, mname, lname, uid, email, cell)) {
     outRes = {
@@ -1733,8 +1604,7 @@ app.post("/banc/register", (req, Res) => {
       let person = JSON.parse(output.person);
       if (prime.rowCount == 0 && person.rowCount == 0) {
         let msg1 = {
-          msg:
-            "Could not find person or prime of the person or the person is not a member. Registration Failed.",
+          msg: "Could not find person or prime of the person or the person is not a member. Registration Failed.",
         };
         sendJsonResponse(Res, msg1);
         return;
@@ -1742,13 +1612,15 @@ app.post("/banc/register", (req, Res) => {
       flow_step = 1;
       primeid = prime.rows[0].entity_id;
       personid = person.rows[0].entity_id;
+      var tokn_str = uid + email + personid;
+      var tokn = crypto.createHash("md5").update(tokn_str).digest("hex");
       //
       var data_json = {
         sql1:
           "SELECT " +
           dbSchema +
           ".setupcredential(" +
-          `'${uid}', '${pwd}', '${email}', ${personid}, ${primeid},'${cell}', ${cond});`,
+          `'${uid}', '${pwd}', '${email}', ${personid}, ${primeid},'${cell}', ${tokn}, ${cond});`,
         name: "Executing register/setupcredentail",
         args1: null,
         cond: true,
@@ -1790,7 +1662,7 @@ app.post("/banc/loadPayForm", (req, Res) => {
   var form_ref_id = req.body.form_ref_id;
   var form_memo = req.body.form_memo;
   var form_date = req.body.form_date;
-  var form_number = '000';
+  var form_number = "000";
 
   console.log(payData);
   /*

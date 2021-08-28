@@ -296,93 +296,6 @@ class SetupDataHelper {
       }
     }
   }
-  /*
-Set or get person ULA
-   setULA = 0 -- get ULA for the member
-   setULA = 1 -- set - update ULA for the member
-   setULA = 2 -- set - insert ULA for the member (inserts default settings & ignores all parameters)
-*/
-  memberULA(
-    person_entity_id,
-    setULA,
-    aCallback,
-    abide_by_banc_bylaws = null,
-    banc_comm = null,
-    member_comm = null,
-    abide_by_premise_rules = null
-  ) {
-    //
-    var outRes = {
-      ula: null,
-      person_entity_id: null,
-      err: false,
-      err_msg: null,
-    };
-    var sqlStmt;
-    let tableULA = this.config.entityTables["ula"];
-    let setValues = "";
-    if (setULA == 0) {  //GET 
-      sqlStmt =
-        "SELECT * from " +
-        tableULA +
-        "WHERE person_entity_id=" +
-        person_entity_id +
-        ";";
-    } else if (setULA == 1) {  // SET - UPDATE
-      if ((abide_by_banc_bylaws = null)) {
-        setValues = setValues + " abide_by_banc_bylaws=" + abide_by_banc_bylaws;
-      }
-      if ((banc_comm = null)) {
-        setValues = setValues + " banc_comm=" + banc_comm;
-      }
-      if ((member_comm = null)) {
-        setValues = setValues + " member_comm=" + member_comm;
-      }
-      if ((abide_by_premise_rules = null)) {
-        setValues =
-          setValues + " abide_by_premise_rules=" + abide_by_premise_rules;
-      }
-      sqlStmt =
-        "UPDATE " +
-        tableULA +
-        " SET " +
-        setValues +
-        ` WHERE link_id=${person_entity_id};`;
-    } else {  // INSERT
-      sqlStmt =
-        "INSERT INTO " +
-        tableULA +
-        "(person_entity_id) VALUES (" +
-        person_entity_id +
-        ")" +
-        +" ON CONFLICT (person_entity_id) DO NOTHING RETURNING *;";
-    }
-
-    //console.log(sqlStmt);
-    outRes.person_entity_id = person_entity_id;
-    execute1SqlsWithCommit(
-      setDbCallData("Processs Event", sqlStmt, null, null, null, true),
-      ulaCB
-    );
-    //
-    function ulaCB(output) {
-      console.log(output);
-      if (output.err) {
-        outRes.err = output.err;
-        outRes.err_msg = output.err_msg;
-        aCallback(outRes);
-        return;
-      }
-      //
-      let result = JSON.parse(output.sql1_result);
-      if (result.rowCount > 0) {
-        let row = result.rows[0];
-        outRes.ula = row;
-        aCallback(outRes);
-        return;
-      }
-    }
-  }
   //
   getConfig() {
     return this.config;
@@ -3417,16 +3330,22 @@ class DataValidator {
     if (!test.valid) return false;
     test = this.validate(email, "email", 0);
     if (!test.valid) return false;
-    test = this.validate(cell, "number", 0);
-    if (!test.valid) return false;
-    test = this.validate(firstname, "name", 0);
-    if (!test.valid) return false;
-    if (middlename.length > 0) {
+    if (cell != null) {
+      test = this.validate(cell, "number", 0);
+      if (!test.valid) return false;
+    }
+    if (firstname.length > 0 || firstname != null) {
+      test = this.validate(firstname, "name", 0);
+      if (!test.valid) return false;
+    }
+    if (middlename.length > 0 || middlename != null) {
       test = this.validate(middlename, "name", 0);
       if (!test.valid) return false;
     }
-    test = this.validate(lastname, "name", 0);
-    if (!test.valid) return false;
+    if (lastname.length > 0 || lastname != null) {
+      test = this.validate(lastname, "name", 0);
+      if (!test.valid) return false;
+    }
     return true;
   }
   //
