@@ -29,6 +29,7 @@
     "banc_community": "banc.banc_community",
     "transaction": "banc.transaction",
     "person": "banc.person",
+    "ula": "banc.person_ula",
     "organizations": "banc.organizations",
     "creds": "banc.creds"
   },

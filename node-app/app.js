@@ -734,6 +734,160 @@ app.get("/banc/getTransactionType", (req, Res) => {
   sendJsonResponse(Res, output);
 });
 //
+app.get("/banc/getmemberula", (req, Res) => {
+  //
+  var outRes = {
+    msg: null,
+    err: null,
+    err_msg: null
+  };
+  var setULA = 0;  //get
+  var resultSeq = -1;
+  //
+  console.log("====== Request obj ====");
+  var calledServiceURL = req.url;
+  console.log(calledServiceURL);
+  var formatType, accessInfo;
+  if (useHeader) {
+    accessInfo = dHelper.getAccessInfo(req);
+    console.log(accessInfo);
+  }
+  
+  if (formatType == null) {
+    formatType = "default";
+  }
+  //  Validate the caller
+  dHelper.validateAccess(accessInfo, aValidateCB);
+  //
+  function aValidateCB(output) {
+    if (output.err === null) {
+      if (output.valid) {
+        let personid = output.personid;
+        let primeId = output.primeid;
+        if (output.access_option == "user") {
+          console.log(primeId, personid);
+          if (!isAuthorized(Res, calledServiceURL, output.authgroup)) {
+            return;
+          }
+          dHelper.memberULA(personid, setULA, aUlaCB,
+            null,
+            null,
+            null,
+            null
+          );
+        } else if (output.access_option == "client") {
+          if (!isAuthorized(Res, calledServiceURL, output.authgroup)) {
+            return;
+          }
+          dHelper.memberULA(personid, setULA, aUlaCB,
+            null,
+            null,
+            null,
+            null
+          );
+        }
+      } else {
+        resultSeq = -1;
+        outRes.msg = "Session token / client token could not be validated!";
+        sendJsonResponse(Res, outRes);
+      }
+    } else {
+      resultSeq = -1;
+      outRes.msg = output.err;
+      outRes["statusCode"] = 500;
+      sendJsonResponse(Res, outRes);
+    }
+  }
+  //
+  function aUlaCB(output) {
+    if (output.err) {
+      output["statusCode"] = 500;
+    }
+    sendJsonResponse(Res, output, calledServiceURL, formatType);
+    return;
+  }
+});
+//
+//
+app.post("/banc/setmemberula", (req, Res) => {
+  //
+  var outRes = {
+    msg: null,
+    err: null,
+    err_msg: null
+  };
+  var setULA = 1;  //get
+  var resultSeq = -1;
+  //
+  console.log("====== Request obj ====");
+  var calledServiceURL = req.url;
+  console.log(calledServiceURL);
+  var formatType, accessInfo;
+  var accessInfo;
+  if (useHeader) {
+    accessInfo = dHelper.getAccessInfo(req);
+    console.log(accessInfo);
+  }
+  const banc_comm = req.body.banc_comm;
+  const abide_by_banc_bylaws = req.body.abide_by_banc_bylaws;
+  const member_comm = req.body.member_comm;
+  const abide_by_premise_rules = req.body.abide_by_premise_rules;
+//
+  if (formatType == null) {
+    formatType = "default";
+  }
+  //  Validate the caller
+  dHelper.validateAccess(accessInfo, aValidateCB);
+  //
+  function aValidateCB(output) {
+    if (output.err === null) {
+      if (output.valid) {
+        let personid = output.personid;
+        let primeId = output.primeid;
+        if (output.access_option == "user") {
+          console.log(primeId, personid);
+          if (!isAuthorized(Res, calledServiceURL, output.authgroup)) {
+            return;
+          }
+          dHelper.memberULA(personid, setULA, aUlaCB,
+            abide_by_banc_bylaws,
+            banc_comm,
+            member_comm,
+            abide_by_premise_rules
+          );
+        } else if (output.access_option == "client") {
+          if (!isAuthorized(Res, calledServiceURL, output.authgroup)) {
+            return;
+          }
+          dHelper.memberULA(personid, setULA, aUlaCB,
+            abide_by_banc_bylaws,
+            banc_comm,
+            member_comm,
+            abide_by_premise_rules
+          );
+        }
+      } else {
+        resultSeq = -1;
+        outRes.msg = "Session token / client token could not be validated!";
+        sendJsonResponse(Res, outRes);
+      }
+    } else {
+      resultSeq = -1;
+      outRes.msg = output.err;
+      outRes["statusCode"] = 500;
+      sendJsonResponse(Res, outRes);
+    }
+  }
+  //
+  function aUlaCB(output) {
+    if (output.err) {
+      output["statusCode"] = 500;
+    }
+    sendJsonResponse(Res, output, calledServiceURL, formatType);
+    return;
+  }
+});
+//
 /**
  * Get Member Info API
  */

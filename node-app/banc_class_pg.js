@@ -74,9 +74,8 @@ class SetupDataHelper {
     let form_memo = this.testdata.form_memo;
     let form_ref_id = this.testdata.form_ref_id;
     var processEventTransaction = this.processEventTransaction.bind(this);
-    var processMembershipTransaction = this.processMembershipTransaction.bind(
-      this
-    );
+    var processMembershipTransaction =
+      this.processMembershipTransaction.bind(this);
     var processSummaryTransaction = this.processSummaryTransaction.bind(this);
     // create function data
     var data = this.sortAndBuildTransactionData(
@@ -214,9 +213,8 @@ class SetupDataHelper {
     };
     var primeid = primeid2Use;
     var processEventTransaction = this.processEventTransaction.bind(this);
-    var processMembershipTransaction = this.processMembershipTransaction.bind(
-      this
-    );
+    var processMembershipTransaction =
+      this.processMembershipTransaction.bind(this);
     var processSummaryTransaction = this.processSummaryTransaction.bind(this);
     // create function data
     var data = this.sortAndBuildTransactionData(
@@ -293,6 +291,93 @@ class SetupDataHelper {
         outRes.msg =
           "Raw Pay Data processed for form_ref_id=" + outRes.form_ref_id;
         outRes.err = false;
+        aCallback(outRes);
+        return;
+      }
+    }
+  }
+  /*
+Set or get person ULA
+   setULA = 0 -- get ULA for the member
+   setULA = 1 -- set - update ULA for the member
+   setULA = 2 -- set - insert ULA for the member (inserts default settings & ignores all parameters)
+*/
+  memberULA(
+    person_entity_id,
+    setULA,
+    aCallback,
+    abide_by_banc_bylaws = null,
+    banc_comm = null,
+    member_comm = null,
+    abide_by_premise_rules = null
+  ) {
+    //
+    var outRes = {
+      ula: null,
+      person_entity_id: null,
+      err: false,
+      err_msg: null,
+    };
+    var sqlStmt;
+    let tableULA = this.config.entityTables["ula"];
+    let setValues = "";
+    if (setULA == 0) {  //GET 
+      sqlStmt =
+        "SELECT * from " +
+        tableULA +
+        "WHERE person_entity_id=" +
+        person_entity_id +
+        ";";
+    } else if (setULA == 1) {  // SET - UPDATE
+      if ((abide_by_banc_bylaws = null)) {
+        setValues = setValues + " abide_by_banc_bylaws=" + abide_by_banc_bylaws;
+      }
+      if ((banc_comm = null)) {
+        setValues = setValues + " banc_comm=" + banc_comm;
+      }
+      if ((member_comm = null)) {
+        setValues = setValues + " member_comm=" + member_comm;
+      }
+      if ((abide_by_premise_rules = null)) {
+        setValues =
+          setValues + " abide_by_premise_rules=" + abide_by_premise_rules;
+      }
+      sqlStmt =
+        "UPDATE " +
+        tableULA +
+        " SET " +
+        setValues +
+        ` WHERE link_id=${person_entity_id};`;
+    } else {  // INSERT
+      sqlStmt =
+        "INSERT INTO " +
+        tableULA +
+        "(person_entity_id) VALUES (" +
+        person_entity_id +
+        ")" +
+        +" ON CONFLICT (person_entity_id) DO NOTHING RETURNING *;";
+    }
+
+    //console.log(sqlStmt);
+    outRes.person_entity_id = person_entity_id;
+    execute1SqlsWithCommit(
+      setDbCallData("Processs Event", sqlStmt, null, null, null, true),
+      ulaCB
+    );
+    //
+    function ulaCB(output) {
+      console.log(output);
+      if (output.err) {
+        outRes.err = output.err;
+        outRes.err_msg = output.err_msg;
+        aCallback(outRes);
+        return;
+      }
+      //
+      let result = JSON.parse(output.sql1_result);
+      if (result.rowCount > 0) {
+        let row = result.rows[0];
+        outRes.ula = row;
         aCallback(outRes);
         return;
       }
@@ -874,10 +959,12 @@ class SetupDataHelper {
         txndata.line_item
       );
       console.log(out.transaction_type_id);
-      var adult_count = this.getTransactionInfoFromId(out.transaction_type_id)
-        .adult_count;
-      var child_count = this.getTransactionInfoFromId(out.transaction_type_id)
-        .child_count;
+      var adult_count = this.getTransactionInfoFromId(
+        out.transaction_type_id
+      ).adult_count;
+      var child_count = this.getTransactionInfoFromId(
+        out.transaction_type_id
+      ).child_count;
       // Collect Summary Info
       smry.amount = smry.amount + out.amount;
       smry.quantity = smry.quantity + out.quantity;
@@ -1485,9 +1572,10 @@ class SetupDataHelper {
   //
   generate_token(length) {
     //edit the token allowed characters
-    var a = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz".split(
-      ""
-    );
+    var a =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz".split(
+        ""
+      );
     var b = [];
     for (var i = 0; i < length; i++) {
       var j = (Math.random() * (a.length - 1)).toFixed(0);
