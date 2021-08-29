@@ -1,5 +1,5 @@
 {
-  "serverurl":"https://banc.heroku.com/",
+  "serverurl":"https://banc.heroku.com",
   "database": "d57a25v6c1g79i",
   "db_schemaDev": "banc",
   "db_schemaProd": "bancpd",

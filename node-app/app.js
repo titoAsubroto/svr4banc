@@ -1715,7 +1715,7 @@ app.post("/banc/register", (req, Res) => {
       //
       execute1SqlsWithCommit(data_json, aSetCredsCB);
       //
-    } else {
+    } else if (flow_step == 2) {
       let res = JSON.parse(output.sql1_result);
       console.log(res);
       if (register == "both" || register == "app") {
@@ -1733,6 +1733,10 @@ app.post("/banc/register", (req, Res) => {
             "[register: " + register + "]" + res.rows[0].setupcredential;
         }
       }
+      flow_step = 3;
+      dHelper.sendEmailActivation(email,activationlink, aSetCredsCB);
+    } else {
+      outRes.msg = outRes.msg + " [Activation Email Sent - Confirmed]";
       sendJsonResponse(Res, outRes);
     }
   }

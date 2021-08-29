@@ -15,6 +15,8 @@ const { release } = require("os");
 const c = require("config");
 const { now } = require("lodash");
 const e = require("express");
+const mailer = require("./banc_nodemailer.js");
+const mailclient = new mailer.SetupNodeMailer(verbose);
 //var useDb = require('pg');
 
 class SetupDataHelper {
@@ -628,6 +630,26 @@ class SetupDataHelper {
         actionCallback(output);
       }
     }
+  }
+  //
+  sendEmailActivation(email, link, actionCallback) {
+    var output = {
+      sql1_result: null,
+      valid: false,
+      err: null,
+      msg: "Invalid email -- email not sent.",
+      statusCode: 200,
+    };
+    if (email.length > 0 && link.length > 0) {
+      let body =
+        "Hello BANC member, <p> Please click <a href='" +
+        link +
+        "'> activation link here</a> to activate your BANC account. <p> Thank you. Regards.";
+      let subject = "Welcome: BANC account Activation -- [automated email]"
+      mailclient.sendMail(email, subject, body);
+      
+    }
+    actionCallback(output);
   }
   //
   isTokenValid(userid, email, token, actionCallback) {
