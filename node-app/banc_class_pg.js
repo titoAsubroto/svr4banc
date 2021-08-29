@@ -3338,9 +3338,17 @@ class DataValidator {
       test = this.validate(firstname, "name", 0);
       if (!test.valid) return false;
     }
-    if (middlename.length > 0 || middlename != null) {
-      test = this.validate(middlename, "name", 0);
-      if (!test.valid) return false;
+    if (
+      !(
+        middlename === null ||
+        typeof middlename === "undefined" ||
+        middlename != ""
+      )
+    ) {
+      if (middlename.length > 0) {
+        test = this.validate(middlename, "name", 0);
+        if (!test.valid) return false;
+      }
     }
     if (lastname.length > 0 || lastname != null) {
       test = this.validate(lastname, "name", 0);

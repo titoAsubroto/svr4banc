@@ -1560,8 +1560,13 @@ app.post("/banc/register", (req, Res) => {
   var uid = null;
   var pwd = null;
   var cell = null;
+  var register = "user"; // default registration
+  var appserial = null;
   if (req.body.hasOwnProperty("userid")) {
     uid = req.body.userid;
+  } else {
+    // If uid is null email will be used as uid
+    uid = email;
   }
   if (req.body.hasOwnProperty("pwd")) {
     pwd = req.body.pwd;
@@ -1569,8 +1574,17 @@ app.post("/banc/register", (req, Res) => {
   if (req.body.hasOwnProperty("cell")) {
     cell = req.body.cell;
   }
+  // either (IMEI number, laptop serial number - unique to the client - it is the client id)
+  // register: "app", "user", "both"
+  if (req.body.hasOwnProperty("register")) {
+    register = req.body.register;
+  }
+  if (req.body.hasOwnProperty("appserial")) {
+    appserial = req.body.appserial;
+  }
 
   var outRes;
+  console.log(fname, mname, lname);
   if (!validator.registrationData(fname, mname, lname, uid, email, cell)) {
     outRes = {
       msg: "Registration failed.",
@@ -1580,10 +1594,25 @@ app.post("/banc/register", (req, Res) => {
     sendJsonResponse(Res, outRes, null, null);
     return;
   }
+  if (
+    pwd == null ||
+    (appserial == null && (register == "both" || register == "app"))
+  ) {
+    outRes = {
+      msg: "Registration failed.",
+      err: true,
+      err_msg:
+        "Registration aborted - incorrect data -- missing pwd or appserial",
+    };
+    sendJsonResponse(Res, outRes, null, null);
+    return;
+  }
   var flow_step = 0;
   var cond = 0;
   var personid = -1;
   var primeid = -1;
+  var tokn_str;
+  var actkey;
   //
   dHelper.getPersonWithPrime(fname, mname, lname, email, 0, 0, aSetCredsCB);
   //
@@ -1600,6 +1629,12 @@ app.post("/banc/register", (req, Res) => {
     }
     //
     if (flow_step == 0) {
+      
+      outRes = {
+        msg: null,
+        err: output.err,
+        err_msg: output.err_msg,
+      };
       let prime = JSON.parse(output.prime);
       let person = JSON.parse(output.person);
       if (prime.rowCount == 0 && person.rowCount == 0) {
@@ -1609,41 +1644,163 @@ app.post("/banc/register", (req, Res) => {
         sendJsonResponse(Res, msg1);
         return;
       }
-      flow_step = 1;
+      flow_step = 2;
       primeid = prime.rows[0].entity_id;
       personid = person.rows[0].entity_id;
-      var tokn_str = uid + email + personid;
-      var tokn = crypto.createHash("md5").update(tokn_str).digest("hex");
+      tokn_str = pwd + email + personid;
+      let act_str = tokn_str + Date.now();
+      actkey = crypto.createHash("sha256").update(act_str).digest("hex");
+      console.log("actkey: " + actkey);
+      // now overload the actkey with registration info
+      if (register == "both") {
+        actkey = actkey + "2";
+      } else if (register == "app") {
+        actkey = actkey + "1";
+      } else {
+        actkey = actkey + "0";
+      }
+      var activationlink = "/banc/activate/" + actkey;
+      console.log(activationlink);
       //
-      var data_json = {
-        sql1:
-          "SELECT " +
-          dbSchema +
-          ".setupcredential(" +
-          `'${uid}', '${pwd}', '${email}', ${personid}, ${primeid},'${cell}', ${tokn}, ${cond});`,
-        name: "Executing register/setupcredentail",
-        args1: null,
-        cond: true,
-      };
+      if (register == "app") {
+        //
+        var data_json = {
+          sql1:
+            "SELECT " +
+            dbSchema +
+            ".setupcredentialapp(" +
+            `'${email}', ${personid}, ${primeid},'${cell}', '${appserial}', '${tokn_str}', '${actkey}', ${cond});`,
+          name: "Executing register/setupcredentailapp",
+          args1: null,
+          cond: true,
+        };
+      } else {
+        if (register == "both") {
+          flow_step = 1;
+        }
+        var data_json = {
+          sql1:
+            "SELECT " +
+            dbSchema +
+            ".setupcredential(" +
+            `'${uid}', '${pwd}', '${email}', ${personid}, ${primeid},'${cell}', '${actkey}', ${cond});`,
+          name: "Executing register/setupcredentail",
+          args1: null,
+          cond: true,
+        };
+      }
       //
       execute1SqlsWithCommit(data_json, aSetCredsCB);
       return;
       //
-    } else {
-      var res = JSON.parse(output.sql1_result);
-      //console.log(res);
-
-      outRes = {
-        msg: null,
-        err: output.err,
-        err_msg: output.err_msg,
-      };
+    } else if (flow_step == 1) {
+      let res = JSON.parse(output.sql1_result);
       if (res.rowCount > 0) {
-        outRes.msg = res.rows[0].setupcredential;
+        outRes.msg =
+          "[register: " + register + "]" + res.rows[0].setupcredential;
+      }
+      flow_step = 2;
+      if (register == "both") {
+        var data_json = {
+          sql1:
+            "SELECT " +
+            dbSchema +
+            ".setupcredentialapp(" +
+            `'${email}', ${personid}, ${primeid},'${cell}', '${appserial}', '${tokn_str}', '${actkey}', ${cond});`,
+          name: "Executing register/setupcredentailapp",
+          args1: null,
+          cond: true,
+        };
+      }
+      //
+      execute1SqlsWithCommit(data_json, aSetCredsCB);
+      //
+    } else {
+      let res = JSON.parse(output.sql1_result);
+      console.log(res);
+      if (register == "both" || register == "app") {
+        if (res.rowCount > 0) {
+          outRes.msg =
+            outRes.msg +
+            " [register: " +
+            register +
+            "]" +
+            res.rows[0].setupcredentialapp;
+        }
+      } else {
+        if (res.rowCount > 0) {
+          outRes.msg =
+            "[register: " + register + "]" + res.rows[0].setupcredential;
+        }
       }
       sendJsonResponse(Res, outRes);
     }
   }
+});
+/*
+ *  Activate account
+ */
+app.get("/banc/activate/:activetoken", (req, Res) => {
+  //
+  console.log("====== API Called ====");
+  var calledServiceURL = req.url;
+  console.log(calledServiceURL);
+  //
+  // read input data
+  var actkey = req.params.activetoken;
+  var flow_step = 0;
+  var cond = 0;
+  var outRes;
+  var flow_step = 0;
+  // actkey from the url feed now
+  if (actkey.length > 0) {
+    let actkeyLastCh = actkey.charAt(actkey.length - 1);
+    cond = parseInt(actkeyLastCh);
+    // call activate function
+    var data_json = {
+      sql1: "SELECT " + dbSchema + ".activatecreds(" + `'${actkey}', ${cond});`,
+      name: "Executing activatecreds",
+      args1: null,
+      cond: true,
+    };
+    //
+    execute1SqlsWithCommit(data_json, activateCredsCB);
+  } else {
+    outRes = {
+      msg: "Activation key could not be found!",
+      err: "ERROR",
+      err_msg: "Activation key erro"
+    };
+    
+    sendJsonResponse(Res, outRes);    
+  }
+
+  //
+  function activateCredsCB(output) {
+    console.log("aSetCredsCB - ", flow_step, " - ", output);
+    if (output.err) {
+      outRes = {
+        msg: "Error: failied. Systemic error.",
+        err: output.err,
+        err_msg: output.msg,
+      };
+      sendJsonResponse(Res, outRes);
+      return;
+    }
+    //
+    var res = JSON.parse(output.sql1_result);
+    //console.log(res);
+    outRes = {
+      msg: null,
+      err: output.err,
+      err_msg: output.err_msg,
+    };
+    if (res.rowCount > 0) {
+      outRes.msg = res.rows[0].activatecreds;
+    }
+    sendJsonResponse(Res, outRes);
+  }
+  return;
 });
 /*
  *  Load pay form for membership/event/donation
@@ -2231,5 +2388,6 @@ app.post("/banc/processPayData", (req, Res) => {
  */
 const PORT = process.env.PORT || port;
 server.listen(PORT, () => {
-  console.log("BANC Server Started on: " + PORT);
+  console.log("BANC server running https ..." + securityConfig.https);
+  console.log(`BANC Server running at PORT: ${PORT}`);
 });
