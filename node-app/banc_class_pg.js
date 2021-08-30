@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 //
 // db is prostgres now
+const verbose = true;
 const fs = require("fs");
 const crypto = require("crypto");
 const appConfig = require("config");
@@ -15,8 +16,8 @@ const { release } = require("os");
 const c = require("config");
 const { now } = require("lodash");
 const e = require("express");
-const mailer = require("./banc_nodemailer.js");
-const mailclient = new mailer.SetupNodeMailer(verbose);
+//const mailer = require("./banc_nodemailer.js");
+//const mailclient = new mailer.SetupNodeMailer(verbose);
 //var useDb = require('pg');
 
 class SetupDataHelper {
@@ -631,7 +632,8 @@ class SetupDataHelper {
       }
     }
   }
-  //
+  //  Removed 
+  /*
   sendEmailActivation(email, link, actionCallback) {
     var output = {
       sql1_result: null,
@@ -641,16 +643,18 @@ class SetupDataHelper {
       statusCode: 200,
     };
     if (email.length > 0 && link.length > 0) {
+      let cLink = this.config.serverurl + link;
       let body =
         "Hello BANC member, <p> Please click <a href='" +
-        link +
+        cLink +
         "'> activation link here</a> to activate your BANC account. <p> Thank you. Regards.";
       let subject = "Welcome: BANC account Activation -- [automated email]"
       mailclient.sendMail(email, subject, body);
-      
+
     }
     actionCallback(output);
   }
+  */
   //
   isTokenValid(userid, email, token, actionCallback) {
     let expiryTime = ` AND valid_date >= now() - INTERVAL '${this.validityOfToken} MINUTES';`;
@@ -3349,7 +3353,12 @@ class DataValidator {
   registrationData(firstname, middlename, lastname, uid, email, cell) {
     console.log(uid, email, cell);
     var test = this.validate(uid, "uid", 0);
-    if (!test.valid) return false;
+    if (!test.valid) {
+      // uid can be an email address
+      test = this.validate(uid, "email", 0);
+      if (!test.valid) {
+        return false; }
+    }
     test = this.validate(email, "email", 0);
     if (!test.valid) return false;
     if (cell != null) {

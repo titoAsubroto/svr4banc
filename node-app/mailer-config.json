@@ -1,7 +1,10 @@
 {
   "auth": {
-      "user": "youremail@gmail.com",
-      "pass": "yourpassword"
+    "user": "banc.activate@banc-online.org",
+    "pass": "Shuru@2021aug"
   },
-  "service": "gmail"
+  "service": "gmail",
+  "host": "smtp.startlogic.com",
+  "port": 465,
+  "secure": false
 }

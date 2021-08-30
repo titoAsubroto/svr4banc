@@ -9,7 +9,7 @@ const bodyParser = require("body-parser");
 const crypto = require("crypto");
 
 const banc = require("./banc_class_pg.js");
-const WPForms = require("./wp_forms.js");
+//const WPForms = require("./wp_forms.js");
 const mailer = require("./banc_nodemailer.js");
 const outputConvertor = require("./output_convertor_FF.js");
 const { Pool } = require("pg");
@@ -21,8 +21,7 @@ const verbose = true;
 const useHeader = true;
 const dHelper = new banc.SetupDataHelper(verbose);
 const validator = new banc.DataValidator(verbose);
-const formsHandler = new WPForms.WPFormsHandler(verbose);
-const mailclient = new mailer.SetupNodeMailer(verbose);
+//const formsHandler = new WPForms.WPFormsHandler(verbose);
 const respConvertor = new outputConvertor.OutputConvertor(verbose);
 const dbSchema = dHelper.getActiveSchema();
 //
@@ -1564,6 +1563,9 @@ app.post("/banc/register", (req, Res) => {
   var appserial = null;
   if (req.body.hasOwnProperty("userid")) {
     uid = req.body.userid;
+    if (uid.length == 0) {
+      uid = email;
+    }
   } else {
     // If uid is null email will be used as uid
     uid = email;
@@ -1613,6 +1615,7 @@ app.post("/banc/register", (req, Res) => {
   var primeid = -1;
   var tokn_str;
   var actkey;
+  var activationlink;
   //
   dHelper.getPersonWithPrime(fname, mname, lname, email, 0, 0, aSetCredsCB);
   //
@@ -1659,7 +1662,7 @@ app.post("/banc/register", (req, Res) => {
       } else {
         actkey = actkey + "0";
       }
-      var activationlink = "/banc/activate/" + actkey;
+      activationlink = "/banc/activate/" + actkey;
       console.log(activationlink);
       //
       if (register == "app") {
@@ -1734,8 +1737,18 @@ app.post("/banc/register", (req, Res) => {
         }
       }
       flow_step = 3;
-      dHelper.sendEmailActivation(email,activationlink, aSetCredsCB);
-    } else {
+      //dHelper.sendEmailActivation(email,activationlink, aSetCredsCB);
+      let cfg = dHelper.getConfig();
+      let cLink = cfg.serverurl + activationlink;
+      let body =
+        "Hello BANC member, <p> Please click <a href='" +
+        cLink +
+        "'> activation link here</a> to activate your BANC account. <p> " +
+        "Actual ACTIVATION Link: " + cLink + 
+        "<p>DO NOT REPLY to this email.  Thank you. <p>Regards, BANC Tech Team.";
+      let subject = "Welcome: BANC account Activation -- [automated email]"
+      const mailclient = new mailer.SetupNodeMailer(verbose);
+      mailclient.sendMail(email, subject, body);
       outRes.msg = outRes.msg + " [Activation Email Sent - Confirmed]";
       sendJsonResponse(Res, outRes);
     }
