@@ -1508,6 +1508,10 @@ class SetupDataHelper {
     }
     return utcStr;
   }
+  // this function creates a primeId
+  createPrimeId(personid, ) {
+
+  }
   //
   generate_token(length) {
     //edit the token allowed characters
