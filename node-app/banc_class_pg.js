@@ -553,8 +553,29 @@ class SetupDataHelper {
         showlink: showlink,
         venue: ve,
         start_date: sd,
-        end_date: ed,
+        end_date: ed
       };
+      if (showlink == 1) { //current event
+        eInfo["currentEvent"] = {
+          id: id,
+          name: eName,
+          year: year,
+          showlink: showlink,
+          venue: ve,
+          start_date: sd,
+          end_date: ed
+        };
+        if (showlink == 2) { //next upcoming event
+          eInfo["nextEvent"] = {
+            id: id,
+            name: eName,
+            year: year,
+            showlink: showlink,
+            venue: ve,
+            start_date: sd,
+            end_date: ed
+          };
+      }
     });
     //console.log("Event Info: ", eInfo);
     this.eventInfo = eInfo;
