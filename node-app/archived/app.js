@@ -714,16 +714,13 @@ app.get("/banc/getEventInfo", (req, Res) => {
     year: null,
     msg: null,
   };
-  //console.log(events);
   if (events[year] === undefined) {
     outRes.events = events;
   } else {
     outRes.events[year] = events[year];
     outRes.year = year;
   }
- // console.log("Requested year: ", year);
-
-  //console.log(toType)
+  //console.log("Requested year: ", year);
   sendJsonResponse(Res, outRes, fromType[0], toType);
 });
 //

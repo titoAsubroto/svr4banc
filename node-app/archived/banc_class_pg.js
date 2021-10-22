@@ -532,47 +532,7 @@ class SetupDataHelper {
   }
   //
   setupEventInfo(result) {
-    var eInfo = {
-      currentEvent: {},
-      nextEvent: {}
-    };
-   // console.log(result)
-    Object.keys(result).forEach(function (key) {
-      var row = result[key];
-      var eName = row.eventname;
-      var id = row.entity_id;
-      var year = row.event_year;
-      var showlink = row.showlink;
-      var sd = row.start_date;
-      var ed = row.end_date;
-      var ve = row.venue;
-      if (showlink == 1) {
-        console.log(year);
-        //current event
-        eInfo.currentEvent = {
-          id: id,
-          name: eName,
-          year: year,
-          showlink: showlink,
-          venue: ve,
-          start_date: sd,
-          end_date: ed,
-        };
-      }
-    
-      if (showlink == 2) {
-        //next upcoming event
-        eInfo.nextEvent = {
-          id: id,
-          name: eName,
-          year: year,
-          showlink: showlink,
-          venue: ve,
-          start_date: sd,
-          end_date: ed,
-        };
-    }});
-
+    var eInfo = {};
     Object.keys(result).forEach(function (key) {
       var row = result[key];
       //console.log(row)
@@ -672,7 +632,7 @@ class SetupDataHelper {
       }
     }
   }
-  //  Removed
+  //  Removed 
   /*
   sendEmailActivation(email, link, actionCallback) {
     var output = {
@@ -1549,7 +1509,9 @@ class SetupDataHelper {
     return utcStr;
   }
   // this function creates a primeId
-  createPrimeId(personid) {}
+  createPrimeId(personid, ) {
+
+  }
   //
   generate_token(length) {
     //edit the token allowed characters
@@ -3399,8 +3361,7 @@ class DataValidator {
       // uid can be an email address
       test = this.validate(uid, "email", 0);
       if (!test.valid) {
-        return false;
-      }
+        return false; }
     }
     test = this.validate(email, "email", 0);
     if (!test.valid) return false;
