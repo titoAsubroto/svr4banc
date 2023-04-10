@@ -708,7 +708,7 @@ app.get("/banc/getEventInfo", (req, Res) => {
   //
   var events = dHelper.getEventInfo();
   var year = req.query.year;
-  const toType = req.query.formatType ? req.query.formatType : "arrayFormat";
+  const toType = req.query.formatType ? req.query.formatType : "default";
   var outRes = {
     events: {},
     year: null,
@@ -1360,38 +1360,7 @@ app.get("/banc/ismember", (req, Res) => {
   var calledServiceURL = req.url;
   console.log(calledServiceURL);
   var token, formatType, uid, email, year, primeid;
-  var fname, lname, mname, personemail;
-  if (useHeader) {
-    token = req.header("stoken");
-    email = req.header("email");
-    uid = req.header("userid");
-    formatType = req.header("formatType");
-    fname = req.header("fname");
-    lname = req.header("lname");
-    mname = req.header("mname");
-    personemail = req.header("personemail");
-    year = req.header("year") || null;
-  } else {
-    token = req.query.stoken;
-    email = req.query.email;
-    uid = req.query.userid;
-    year = req.query.year || null;
-    if (
-      req.query.hasOwnProperty("fname") &&
-      req.query.hasOwnProperty("lname") &&
-      req.query.hasOwnProperty("mname")
-    ) {
-      fname = req.query.fname;
-      lname = req.query.lname;
-      mname = req.query.mname;
-      personemail = req.query.personemail;
-    }
-  }
-  if (formatType == null) {
-    formatType = "default";
-  }
-  //
-  var flow_step = 0;
+  var fname, lname, mname, email;
   var outRes = {
     membership: [],
     status: "unknown",
@@ -1403,6 +1372,38 @@ app.get("/banc/ismember", (req, Res) => {
     error: null,
     err_msg: null,
   };
+  if (useHeader) {
+    token = req.header("stoken");
+//    email = req.header("email");
+    uid = req.header("userid");
+    formatType = req.header("formatType");
+    fname = req.header("fname");
+    lname = req.header("lname");
+    mname = req.header("mname");
+    email = req.header("email");
+    year = req.header("year") || null;
+  } else {
+    token = req.query.stoken;
+    //email = req.query.email;
+    uid = req.query.userid;
+    year = req.query.year || null;
+    if (
+      req.query.hasOwnProperty("fname") &&
+      req.query.hasOwnProperty("lname") &&
+      req.query.hasOwnProperty("mname")
+    ) {
+      fname = req.query.fname;
+      lname = req.query.lname;
+      mname = req.query.mname;
+      email = req.query.email;
+    }
+  }
+  if (formatType == null) {
+    formatType = "default";
+  }
+  //
+  var flow_step = 0;
+
   var flow_step = 0;
   //
   dHelper.isTokenValid(uid, email, token, aMembershipCB);
@@ -2167,6 +2168,212 @@ app.post("/banc/ppalconfirmed", (req, Res) => {
   };
   sendJsonResponse(Res, outRes);
   return;
+});
+/*
+Process membership submission
+*/
+app.post("/banc/processMembership", (req, Res) => {
+  //
+  console.log("====== API Called ====");
+  var calledServiceURL = req.url;
+  console.log(calledServiceURL);
+//
+  var outRes = {
+      prime: null,
+      form_ref_id: null,
+      membership: null,
+      events: null,
+      summary: null,
+      settlement: null,
+      msg: "",
+      err: null,
+      statusCode: 500,
+      result: {},
+      err_msg: "Error Occurred",
+    };
+  var loginInfo = {
+      uid: null,
+      email: null,
+      personid: 0,
+      primeid: 0,
+      memberid: 0,
+      isValid: false,
+    };
+  /*
+  get Access info from header, payload and source
+  */
+  const accessInfo = dHelper.getAccessInfo(req);
+  const dataref=
+  typeof req.header("dataref") === "undefined" ? "payload" : req.header("dataref");
+  var payload=
+  typeof req.header("payload") === "undefined" ? "null" : req.header("payload");
+  console.log(accessInfo);
+  var flow_step = -1;
+  //  Validate the caller
+  dHelper.validateAccess(accessInfo, aValidateCB);
+//
+function aValidateCB(output) {
+  if (output.err === null) {
+    if (output.valid) {
+      //
+      loginInfo.email = accessInfo.email;
+      loginInfo.uid = accessInfo.uid;
+      loginInfo.authgroup = output.authgroup;
+      loginInfo.isValid = output.valid;
+      loginInfo.personid = output.personid;
+      loginInfo.primeid = output.primeid;
+      loginInfo.memberid = output.memberid;
+      loginInfo.access_option = output.access_option;
+      //
+      if (!isAuthorized(Res, calledServiceURL, output.authgroup)) {
+        outRes.err_msg = "Error Occurred";
+        outRes.statusCode = 403;
+        outRes.msg = "You are not authorized to run this!";
+        sendJsonResponse(Res, outRes);
+        return;
+      }
+      // Call the main orchestration manage callback function now
+      execute1SqlsWithCommit(
+        dHelper.setDbCallData(
+          "Processing unprocessed data",
+          sql1,
+          null,
+          null,
+          null,
+          cond
+        ),
+        aProcessDataCB
+      );
+    } else {
+      outRes.err_msg = "Error Occurred";
+      outRes.statusCode = 403;
+      outRes.msg = "Session token / client token could not be validated!";
+      sendJsonResponse(Res, outRes);
+      return;
+    }
+  } else {
+    outRes.msg = output.err;
+    outRes["statusCode"] = 500;
+    sendJsonResponse(Res, outRes);
+    return;
+  }
+}
+//
+function aProcessDataCB(output) {
+  var sql1_result = null;
+  if (output.sql1_result) sql1_result = JSON.parse(output.sql1_result);
+  // console.log("aPaySubmitCB - ", flow_step, " - ", sql1_result);
+  if (output.err) {
+    outRes.msg = "Error: Database execution error!";
+    outRes.err = output.err;
+    outRes.err_msg = output.msg;
+    sendJsonResponse(Res, outRes, calledServiceURL, null);
+    return;
+  }
+  // flow_step = 0
+  if (flow_step == 0) {
+    if (sql1_result.rowCount == 0) {
+      outRes.msg =
+        "No Pay data retrived with condition - banc_data_processed=false. & form_ref_id =" +
+        form_ref_id;
+      outRes.raw_data = null;
+      outRes.settlement_data = null;
+      outRes.statusCode = 500;
+      sendJsonResponse(Res, outRes, calledServiceURL, null);
+      return;
+    }
+    // Found a row -- contain banc_transaction data unprocessed.  Now find the prime and person entity id for the submitter
+    flow_step = 1;
+    let row = sql1_result.rows[0];
+    raw_data = JSON.parse(row["banc_transaction_data"]);
+    outRes.form_ref_id = row.form_ref_id;
+    let jData = raw_data.pay_data.person;
+    dHelper.getPersonWithPrime(
+      jData.firstname,
+      jData.middlename,
+      jData.lastname,
+      jData.email,
+      null,
+      null,
+      aProcessDataCB
+    );
+    return;
+  }
+  // Process prime and person info if found -- got to step 4. Otherwise, go to step 2 to insert the person as prime
+  if (flow_step == 1) {
+    flow_step = 2;
+    if (output.found) {
+      let prime = JSON.parse(output.prime);
+      outRes.prime = prime.rows[0];
+      outRes.found = true;
+      flow_step = 4;
+    }
+  }
+  //  Step 2 to insert the person as prime then go to step 3
+  if (flow_step == 2) {
+    let jData = raw_data.pay_data.person;
+    jData.affiliationid = 0;
+    let key = null;
+    let primeid = 0;
+    let prime = 1;
+    let dep = 0;
+    let isMinor = 0;
+    flow_step = 3;
+    dHelper.executePersonSQL(
+      jData,
+      primeid,
+      prime,
+      dep,
+      isMinor,
+      key,
+      aProcessDataCB
+    );
+  }
+  //  Process prime information from step 2 and proceed to step 4
+  if (flow_step == 3) {
+    if (sql1_result.rowCount == 0) {
+      outRes.msg =
+        "Systemic error: Could not insert prime person but verified no such person for form_ref_id: " +
+        form_ref_id;
+      outRes.err = true;
+      sendJsonResponse(Res, outRes, calledServiceURL, null);
+      return;
+    }
+    outRes.prime = sql1_result.rows[0];
+    //      console.log("Prime inserted: ", outRes.prime);
+    flow_step = 4;
+  }
+  if (flow_step == 4) {
+    let primeid2Use = outRes.prime.entity_id;
+    flow_step = 5;
+    //let payData = raw_data.payData;
+    //      console.log(raw_data);
+    dHelper.processPayData(raw_data, primeid2Use, aProcessDataCB);
+    return;
+  }
+  if (flow_step == 5) {
+    outRes.membership = output.membership;
+    outRes.events = output.events;
+    outRes.summary = output.summary;
+    outRes.msg = "Banc Pay Data processed for id: " + outRes.form_ref_id;
+    flow_step = 6;
+    let banc_transaction = true;
+    let settlement = false;
+    dHelper.updateUnprocessedDataTable(
+      outRes,
+      banc_transaction,
+      settlement,
+      aProcessDataCB
+    );
+    return;
+  }
+  if (flow_step == 6) {
+    sendJsonResponse(Res, outRes, calledServiceURL, null);
+    return;
+  }
+}
+
+  //
 });
 /*
 *  process "unprocessed data"

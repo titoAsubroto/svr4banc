@@ -756,6 +756,37 @@ class SetupDataHelper {
       });
     });
   }
+//
+  getMembers(prime_person_id, aCallback) {
+    const sqlStmt =
+      "SELECT * FROM " + this.activeSchema + ".members WHERE personid_of_prime= " +
+      `${prime_person_id};`;
+    //console.log(sqlStmt);
+    execute1SqlsWithCommit(
+      setDbCallData("getemberId", sqlStmt, null, null, null, true), aCallback);
+  }
+//
+  updateMembers(prime_person_id, year, active, aCallback) {
+  const sqlStmt =
+    "UPDATE " + this.activeSchema + ".members SET membership_year= " +
+    `${year}, active= ${active} WHERE personid_of_prime= ${prime_person_id} ;`;
+  //console.log(sqlStmt);
+  execute1SqlsWithCommit(
+    setDbCallData("getemberId", sqlStmt, null, null, null, true), aCallback);
+  }
+//
+//
+  setMembers(nameKey, prime_person_id, affiliation, year, aCallback) {
+    const member_type = this.affiliationType[affiliation].entity1_id
+    const memberId = nameKey + generate_token(10) 
+    const sqlStmt =
+      "INSERT INTO " + this.activeSchema + ".members membershipid, personid_of_prime, member_type, membership_year VALUES " +
+      `('${memberId}',${prime_person_id}, '${member_type}', '${year}')` +
+      " ON CONFLICT (member_type, personid_of_prime) DO NOTHING RETURNING *;";
+    //console.log(sqlStmt);
+    execute1SqlsWithCommit(
+      setDbCallData("setMemberId", sqlStmt, null, null, null, true), aCallback);
+  }
   //
   setTransactionTypeInfo() {
     const sqlStmt =
